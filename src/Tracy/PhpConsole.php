@@ -94,13 +94,15 @@ class PhpConsole
 			$_err = $message;
 		});
 		extract($this->context, EXTR_SKIP);
+		ob_start();
 		$res = eval('return ' . func_get_arg(0) . ';');
+		$_con = ob_get_contents();
 		restore_error_handler();
 		if (isset($_err)) {
 			return '<i>' . htmlspecialchars($_err) . '</i>';
 		}
 		$this->context = get_defined_vars();
-		return Dumper::toHtml($res);
+		return $_con ?: Dumper::toHtml($res);
 	}
 
 
